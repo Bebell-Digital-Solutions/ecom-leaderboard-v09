@@ -1,3 +1,4 @@
+
 :root {
   --primary-color: #DF1783;
   --secondary-color: #8B5CF6;
@@ -30,7 +31,6 @@ body {
   background: linear-gradient(135deg, #DF1783 0%, #8B5CF6 100%);
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
 
 /* Loader Styles */
@@ -304,7 +304,11 @@ input[type=number] {
 .leaderboard-table { background: var(--bg-primary); border-radius: 16px; box-shadow: var(--shadow-lg); overflow-x: auto; margin-bottom: 40px; }
 .table-header, .leaderboard-row { display: grid; grid-template-columns: 80px 1fr 180px 100px 100px; gap: 20px; padding: 20px 24px; border-bottom: 1px solid var(--border-color); align-items: center; min-width: 600px; }
 .table-header { background: var(--bg-secondary); font-weight: 600; color: var(--text-secondary); }
-.table-content { max-height: 600px; overflow-y: auto; }
+.table-content {
+    max-height: 600px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+}
 .leaderboard-row:last-child { border-bottom: none; }
 .leaderboard-row:hover { background: var(--bg-secondary); }
 .rank-badge { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; }
@@ -350,12 +354,27 @@ input[type=number] {
 
 .btn-icon { background: none; border: 1px solid var(--border-color); border-radius: 6px; padding: 6px 10px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; transition: all 0.2s ease; white-space: nowrap; }
 .btn-icon .lucide-icon { width: 16px; height: 16px; flex-shrink: 0; }
-.btn-edit { color: var(--secondary-color); }
+.btn-edit {
+    color: var(--secondary-color);
+    background-color: #f5f3ff;
+    border-color: rgba(139, 92, 246, 0.5);
+}
 .btn-edit .lucide-icon { color: var(--secondary-color); }
-.btn-edit:hover { background-color: #f5f3ff; border-color: var(--secondary-color); }
-.btn-delete { color: var(--error-color); }
+.btn-edit:hover {
+    background-color: #ede9fe;
+    border-color: var(--secondary-color);
+}
+.btn-delete {
+    color: var(--error-color);
+    background-color: #fee2e2;
+    border-color: rgba(239, 68, 68, 0.5);
+}
 .btn-delete .lucide-icon { color: var(--error-color); }
-.btn-delete:hover { background-color: #fee2e2; border-color: var(--error-color); }
+.btn-delete:hover {
+    background-color: #fecaca;
+    border-color: var(--error-color);
+}
+
 
 .status-tag {
     padding: 4px 10px;
@@ -475,7 +494,7 @@ input[type=number] {
     flex-direction: column;
     justify-content: space-between;
     text-align: right;
-    height: 200px;
+    height: 150px;
     width: 60px;
     flex-shrink: 0;
     font-size: 12px;
@@ -537,22 +556,3 @@ input[type=number] {
     transition: height 0.5s ease-out;
 }
 .monthly-chart-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-secondary);
-}
-
-/* Footer */
-.app-footer {
-    background: rgba(255, 255, 255, 0.95);
-    border-top: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    padding: 0;
-    text-align: center;
-    margin-top: auto;
-}
-
-.app-footer p {
-    font-size: 12px;
-}
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
