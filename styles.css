@@ -556,3 +556,22 @@ input[type=number] {
     transition: height 0.5s ease-out;
 }
 .monthly-chart-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+/* Footer */
+.app-footer {
+    background: rgba(255, 255, 255, 0.95);
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0;
+    text-align: center;
+    margin-top: auto;
+}
+
+.app-footer p {
+    font-size: 12px;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
