@@ -141,7 +141,6 @@ class DataStore {
 }
 
 // --- GLOBAL APP INITIALIZATION ---
-let dataStore;
 document.addEventListener('DOMContentLoaded', () => {
     window.dataStore = new DataStore();
     window.dataStore.initialize();
@@ -150,33 +149,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
-    // --- Redirection and View Logic ---
-    if (isAdmin && currentPage !== 'backend.html') {
-        window.location.href = 'backend.html';
-        return; // Prevent further script execution
-    }
-
-    if (!isAdmin && currentPage === 'backend.html') {
-        alert('Access Denied: You must be an administrator to view this page.');
+    // --- Session Protection ---
+    const protectedPages = ['dashboard.html', 'leaderboard.html', 'backend.html'];
+    if (protectedPages.includes(currentPage) && !loggedInStoreId) {
+        alert('You must be logged in to view this page.');
         window.location.href = 'index.html';
-        return; // Prevent further script execution
+        return; // Stop execution
+    }
+    if (currentPage === 'backend.html' && !isAdmin) {
+        alert('Access Denied: You must be an administrator to view this page.');
+        window.location.href = 'dashboard.html';
+        return; // Stop execution
     }
 
-    if (loggedInStoreId && !isAdmin) {
-        if (document.getElementById('authSection')) showDashboard(loggedInStoreId);
-    } else if (!loggedInStoreId) {
-        if (document.getElementById('authSection')) showAuth();
+    // --- Page-Specific Rendering ---
+    if (currentPage === 'dashboard.html') {
+        if (isAdmin) {
+            renderAdminDashboard();
+        } else {
+            renderUserDashboard(loggedInStoreId);
+        }
     }
     
+    // Universal setup
     updateAdminVisibility();
-
-    // Dispatch event for other scripts to use the initialized dataStore
     const event = new CustomEvent('appReady');
     document.dispatchEvent(event);
-
-    // Hide loader after everything is set up
     hideLoader();
 });
+
 
 // --- LOADER ---
 function showLoader() {
@@ -217,7 +218,6 @@ async function handleLogin(event) {
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
 
-    // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 500));
 
     if (email.toLowerCase() === 'bebell.digitalsolutions@gmail.com' && password === 'Bebell/25') {
@@ -230,8 +230,8 @@ async function handleLogin(event) {
     const store = dataStore.getStoreByEmail(email);
     if (store && store.password === password) {
         sessionStorage.setItem('loggedInStoreId', store.id);
-        sessionStorage.removeItem('isAdmin'); // Ensure not an admin
-        window.location.reload();
+        sessionStorage.removeItem('isAdmin');
+        window.location.href = 'dashboard.html';
     } else {
         alert('Invalid email or password.');
         hideLoader();
@@ -272,14 +272,7 @@ function logout() {
 }
 
 // --- UI & DASHBOARD ---
-function showDashboard(storeId) {
-    const authSection = document.getElementById('authSection');
-    const dashboardSection = document.getElementById('dashboardSection');
-    if (!authSection || !dashboardSection) return;
-
-    authSection.style.display = 'none';
-    dashboardSection.style.display = 'block';
-    
+function renderUserDashboard(storeId) {
     const store = dataStore.getStoreById(storeId);
     if (!store) {
         logout();
@@ -290,18 +283,47 @@ function showDashboard(storeId) {
     updateDashboardStats(storeId);
     generateTrackingCode(storeId);
     updateRecentActivity(storeId);
+    lucide.createIcons();
 }
 
-function showAuth() {
-    const authSection = document.getElementById('authSection');
+function renderAdminDashboard() {
     const dashboardSection = document.getElementById('dashboardSection');
-     if (!authSection || !dashboardSection) return;
-    authSection.style.display = 'flex';
-    dashboardSection.style.display = 'none';
+
+    // Customize dashboard for admin view
+    document.getElementById('userStoreName').textContent = 'Administrator';
+    dashboardSection.querySelector('.dashboard-header p').textContent = 'Welcome to the eCOM Leaderboard control panel.';
+
+    // Repurpose stats grid for global stats
+    const allStores = dataStore.getAllStores();
+    const allTransactions = dataStore.getAllTransactions();
+    const totalRevenueAll = allTransactions.reduce((sum, tx) => sum + tx.revenueDOP, 0);
+    const statCards = document.querySelectorAll('.stat-card');
+    
+    if (statCards.length >= 4) {
+        // Total Revenue
+        statCards[0].querySelector('h3').textContent = formatCurrency(totalRevenueAll, 'DOP');
+        statCards[0].querySelector('p').textContent = 'Total Platform Revenue';
+        statCards[0].querySelector('.lucide-icon').outerHTML = '<i data-lucide="globe" class="lucide-icon"></i>';
+
+        // Total Orders
+        statCards[1].querySelector('h3').textContent = allTransactions.length.toLocaleString();
+        statCards[1].querySelector('p').textContent = 'Total Platform Orders';
+
+        // Registered Stores
+        statCards[2].querySelector('h3').textContent = allStores.length.toLocaleString();
+        statCards[2].querySelector('p').textContent = 'Registered Stores';
+        statCards[2].querySelector('.lucide-icon').outerHTML = '<i data-lucide="store" class="lucide-icon"></i>';
+
+        // Hide the 4th card (Avg Order Value) as it's not applicable
+        statCards[3].style.display = 'none';
+    }
+
+    // Hide store-specific integration details
+    document.querySelector('.integration-section').style.display = 'none';
+    lucide.createIcons();
 }
 
 function updateDashboardStats(storeId) {
-    const store = dataStore.getStoreById(storeId);
     const stats = dataStore.getStoreStats(storeId);
 
     const allStoresRanked = dataStore.getAllStores()
@@ -409,6 +431,7 @@ function updateAdminVisibility() {
     });
 }
 
+
 function sendNewAccountEmail(templateParams) {
     // IMPORTANT: Replace with your own EmailJS credentials from your account dashboard
     const serviceID = 'El_Negocio_Digital'; // e.g., 'service_abc123'
@@ -420,7 +443,7 @@ function sendNewAccountEmail(templateParams) {
         return;
     }
     
-    const finalParams = {
+   const finalParams = {
         ...templateParams,
         subject: "NEW ACCOUNT ADDED IN ECOM LEADERBOARD"
     };
