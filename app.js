@@ -39,9 +39,9 @@ class DataStore {
 
         this.transactions = [
              // Transactions to set exact revenues for podium winners
-            { storeId: '10000001', orderId: 'tx-gold', amount: 10000000, date: new Date().toISOString() },
-            { storeId: '10000002', orderId: 'tx-silver', amount: 5000000, date: new Date().toISOString() },
-            { storeId: '10000003', orderId: 'tx-bronze', amount: 1000000, date: new Date().toISOString() },
+            { storeId: '10000001', orderId: 'tx-gold', amount: 10000000, date: new Date().toISOString(), revenueDOP: 10000000 },
+            { storeId: '10000002', orderId: 'tx-silver', amount: 5000000, date: new Date().toISOString(), revenueDOP: 5000000 },
+            { storeId: '10000003', orderId: 'tx-bronze', amount: 1000000, date: new Date().toISOString(), revenueDOP: 1000000 },
         ];
         
         // Add some random transactions for other stores
@@ -133,7 +133,7 @@ class DataStore {
     getStoreStats(storeId) {
         const storeTransactions = this.getTransactionsByStore(storeId);
         const totalOrders = storeTransactions.length;
-        const totalRevenueDOP = storeTransactions.reduce((sum, tx) => sum + tx.revenueDOP, 0);
+        const totalRevenueDOP = storeTransactions.reduce((sum, tx) => sum + (tx.revenueDOP || 0), 0);
         const avgOrderValueDOP = totalOrders > 0 ? totalRevenueDOP / totalOrders : 0;
         
         return { totalOrders, totalRevenueDOP, avgOrderValueDOP };
@@ -430,6 +430,7 @@ function updateAdminVisibility() {
         el.style.display = isAdmin ? 'inline-block' : 'none';
     });
 }
+
 
 
 function sendNewAccountEmail(templateParams) {
