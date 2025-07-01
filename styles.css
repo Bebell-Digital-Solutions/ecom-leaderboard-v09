@@ -457,7 +457,7 @@ input[type=number] {
 
 /* Global Stats Chart */
 #globalStatsContainer {
-    margin-top: 60px;
+    margin-top: 40px;
     margin-bottom: 40px;
 }
 .stats-chart-card { background-color: var(--bg-primary); border-radius: 16px; padding: 24px; box-shadow: var(--shadow-lg); }
@@ -474,7 +474,7 @@ input[type=number] {
     flex-direction: column;
     justify-content: space-between;
     text-align: right;
-    height: 250px;
+    height: 150px;
     width: 60px;
     flex-shrink: 0;
     font-size: 12px;
