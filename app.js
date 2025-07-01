@@ -146,12 +146,25 @@ document.addEventListener('DOMContentLoaded', () => {
     window.dataStore = new DataStore();
     window.dataStore.initialize();
 
-    const currentPage = window.location.pathname.split('/').pop();
     const loggedInStoreId = sessionStorage.getItem('loggedInStoreId');
+    const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
-    if (loggedInStoreId) {
-         if (document.getElementById('authSection')) showDashboard(loggedInStoreId);
-    } else {
+    // --- Redirection and View Logic ---
+    if (isAdmin && currentPage !== 'backend.html') {
+        window.location.href = 'backend.html';
+        return; // Prevent further script execution
+    }
+
+    if (!isAdmin && currentPage === 'backend.html') {
+        alert('Access Denied: You must be an administrator to view this page.');
+        window.location.href = 'index.html';
+        return; // Prevent further script execution
+    }
+
+    if (loggedInStoreId && !isAdmin) {
+        if (document.getElementById('authSection')) showDashboard(loggedInStoreId);
+    } else if (!loggedInStoreId) {
         if (document.getElementById('authSection')) showAuth();
     }
     
@@ -160,7 +173,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dispatch event for other scripts to use the initialized dataStore
     const event = new CustomEvent('appReady');
     document.dispatchEvent(event);
+
+    // Hide loader after everything is set up
+    hideLoader();
 });
+
+// --- LOADER ---
+function showLoader() {
+    const loader = document.getElementById('loader-overlay');
+    if (loader) {
+        loader.style.display = 'flex';
+        loader.style.opacity = '1';
+    }
+}
+function hideLoader() {
+    const loader = document.getElementById('loader-overlay');
+    if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => { loader.style.display = 'none'; }, 500);
+    }
+}
+
 
 // --- AUTHENTICATION ---
 function showLogin() {
@@ -177,23 +210,20 @@ function showRegister() {
     document.querySelector('.tab-btn[onclick="showRegister()"]').classList.add('active');
 }
 
-function handleLogin(event) {
+async function handleLogin(event) {
     event.preventDefault();
+    showLoader();
+
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
 
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     if (email.toLowerCase() === 'bebell.digitalsolutions@gmail.com' && password === 'Bebell/25') {
         sessionStorage.setItem('isAdmin', 'true');
-        // Log in as admin, but also associate with the first store for dashboard view
-        const firstStore = dataStore.getAllStores()[0];
-        if (firstStore) {
-            sessionStorage.setItem('loggedInStoreId', firstStore.id);
-            alert('Admin access granted. Welcome!');
-            window.location.reload();
-        } else {
-             // If no stores exist, go straight to the admin panel
-             window.location.href = 'backend.html';
-        }
+        sessionStorage.setItem('loggedInStoreId', 'admin_user');
+        window.location.href = 'backend.html';
         return;
     }
 
@@ -204,6 +234,7 @@ function handleLogin(event) {
         window.location.reload();
     } else {
         alert('Invalid email or password.');
+        hideLoader();
     }
 }
 
@@ -218,6 +249,11 @@ function handleRegister(event) {
         currency: document.getElementById('currency').value
     };
     
+    if (!storeData.id || !storeData.email || !storeData.password || !storeData.name || !storeData.url) {
+        alert('Please fill out all fields.');
+        return;
+    }
+
     const newStore = dataStore.addStore(storeData);
     if (newStore) {
         alert('Registration successful! Please log in.');
@@ -375,11 +411,11 @@ function updateAdminVisibility() {
 
 function sendNewAccountEmail(templateParams) {
     // IMPORTANT: Replace with your own EmailJS credentials from your account dashboard
-    const serviceID = 'YOUR_SERVICE_ID'; // e.g., 'service_abc123'
-    const templateID = 'YOUR_TEMPLATE_ID'; // e.g., 'template_xyz456'
-    const publicKey = 'YOUR_PUBLIC_KEY'; // e.g., 'AbCdEfGhIjKlMnOpQ'
+    const serviceID = 'El_Negocio_Digital'; // e.g., 'service_abc123'
+    const templateID = 'bebell_notifications'; // e.g., 'template_xyz456'
+    const publicKey = 'pzi6GkEVpxFMX_PUe'; // e.g., 'AbCdEfGhIjKlMnOpQ'
 
-    if (serviceID === 'YOUR_SERVICE_ID' || templateID === 'YOUR_TEMPLATE_ID' || publicKey === 'YOUR_PUBLIC_KEY') {
+    if (serviceID === 'El_Negocio_Digital' || templateID === 'bebell_notifications' || publicKey === 'pzi6GkEVpxFMX_PUe') {
         console.warn('EmailJS not configured. Please add your credentials in app.js. Skipping email notification.');
         return;
     }
