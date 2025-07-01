@@ -432,7 +432,6 @@ function updateAdminVisibility() {
 }
 
 
-
 function sendNewAccountEmail(templateParams) {
     // IMPORTANT: Replace with your own EmailJS credentials from your account dashboard
     const serviceID = 'El_Negocio_Digital'; // e.g., 'service_abc123'
