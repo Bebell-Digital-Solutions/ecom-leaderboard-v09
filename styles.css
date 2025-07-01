@@ -477,7 +477,7 @@ input[type=number] {
     flex-direction: column;
     justify-content: space-between;
     text-align: right;
-    height: 200px;
+    height: 150px;
     width: 60px;
     flex-shrink: 0;
     font-size: 12px;
