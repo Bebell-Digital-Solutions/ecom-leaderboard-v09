@@ -19,7 +19,7 @@
                 <h2>eCOM Leaderboard 2026 💫</h2>
             </div>
             <div class="nav-links">
-                <a href="index.html" class="nav-link active">Dashboard</a>
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
                 <a href="leaderboard.html" class="nav-link">Leaderboard</a>
                 <a href="#" onclick="logout()" class="nav-link">Logout</a>
             </div>
@@ -90,86 +90,6 @@
             </div>
         </div>
 
-        <!-- Dashboard Section -->
-        <div id="dashboardSection" class="dashboard-section" style="display: none;">
-            <div class="dashboard-header">
-                <h1>Welcome back, <span id="userStoreName"></span>!</h1>
-                <p>Here's how your store is performing</p>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i data-lucide="dollar-sign" class="lucide-icon"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="totalRevenue">$0</h3>
-                        <p>Total Revenue</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i data-lucide="shopping-cart" class="lucide-icon"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="totalOrders">0</h3>
-                        <p>Total Orders</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i data-lucide="bar-chart-2" class="lucide-icon"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="leaderboardRank">#-</h3>
-                        <p>Leaderboard Rank</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i data-lucide="star" class="lucide-icon"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="avgOrderValue">$0</h3>
-                        <p>Avg. Order Value</p>                    </div>
-                </div>
-            </div>
-            
-            <div class="integration-section">
-                <div class="integration-card">
-                    <h3><i data-lucide="rocket" class="lucide-icon"></i> Integration Setup</h3>
-                    <p>Add this tracking code to your store's checkout page to start collecting data.</p>
-                    
-                    <div class="code-container">
-                        <pre id="trackingCode"></pre>
-                        <button onclick="copyTrackingCode()" class="btn btn-secondary">Copy Code</button>
-                    </div>
-
-                    <div class="connection-test">
-                        <h3><i data-lucide="wifi" class="lucide-icon"></i> Connection Test</h3>
-                        <p>After placing a test order on your site, check the connection.</p>
-                        <div class="connection-test-action">
-                            <button onclick="testConnection()" class="btn btn-primary">Test Connection</button>
-                            <div id="connectionStatus" class="status-indicator" style="display: none;">
-                                <span class="status-dot"></span>
-                                <span id="connectionStatusText">Testing...</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="integration-card">
-                    <h3><i data-lucide="activity" class="lucide-icon"></i> Recent Activity</h3>
-                    <div id="recentActivity" class="activity-list">
-                        <div class="activity-item">
-                            <i data-lucide="link" class="lucide-icon"></i>
-                            <span>Awaiting first connection...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
     </div>
     
     <footer class="app-footer">
@@ -178,7 +98,6 @@
             <a href="backend.html" class="footer-link admin-only">Admin Panel</a>
         </div>
     </footer>
-
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
