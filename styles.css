@@ -494,7 +494,7 @@ input[type=number] {
     flex-direction: column;
     justify-content: space-between;
     text-align: right;
-    height: 150px;
+    height: 200px;
     width: 60px;
     flex-shrink: 0;
     font-size: 12px;
